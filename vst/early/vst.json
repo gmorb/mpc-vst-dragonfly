@@ -1,0 +1,14 @@
+{
+  "name": "Dragonfly Early Reflections",
+  "vendor": "Dragonfly",
+  "uid": "DfEr",
+  "version": 3210,
+  "so": "dragonfly_early.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "upstream": "early-reflections",
+  "glue_defines": [
+    "DF_HAS_PROGRAM"
+  ],
+  "about": "Dragonfly Early Reflections (Michael Willis, Rob van den Berg) as an MPC insert effect: 8 room-reflection programs."
+}

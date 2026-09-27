@@ -1,0 +1,15 @@
+{
+  "name": "Dragonfly Plate",
+  "params": [
+    {"key": "dry_level", "name": "Dry Level", "min": 0, "max": 100, "unit": "%", "default": 80},
+    {"key": "early_level", "name": "Wet Level", "min": 0, "max": 100, "unit": "%", "default": 20},
+    {"key": "algorithm", "name": "Algorithm", "options": ["Simple", "Nested", "Tank"], "default": 1},
+    {"key": "width", "name": "Width", "min": 50, "max": 150, "unit": "%", "default": 100},
+    {"key": "predelay", "name": "Predelay", "min": 0, "max": 100, "unit": "ms", "default": 0},
+    {"key": "decay", "name": "Decay", "min": 0.100000001, "max": 10, "unit": "s", "default": 0.400000006},
+    {"key": "low_cut", "name": "Low Cut", "min": 0, "max": 200, "unit": "Hz", "default": 200},
+    {"key": "high_cut", "name": "High Cut", "min": 1000, "max": 16000, "unit": "Hz", "default": 16000},
+    {"key": "early_damp", "name": "Dampen", "min": 1000, "max": 16000, "unit": "Hz", "default": 13000},
+    {"key": "preset", "name": "Preset", "options": ["Abrupt Plate", "Bright Plate", "Clear Plate", "Dark Plate", "Foil Tray", "Metal Roof", "Narrow Tank", "Phat Tank"], "default": 1}
+  ]
+}

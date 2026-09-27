@@ -1,0 +1,14 @@
+{
+  "name": "Dragonfly Room",
+  "vendor": "Dragonfly",
+  "uid": "DfRm",
+  "version": 3210,
+  "so": "dragonfly_room.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "upstream": "room-reverb",
+  "glue_defines": [
+    "DF_PRESETS_BANKS"
+  ],
+  "about": "Dragonfly Room Reverb (Michael Willis, Rob van den Berg) as an MPC insert effect: small-to-medium rooms with low boost, 25 presets."
+}

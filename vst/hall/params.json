@@ -1,0 +1,24 @@
+{
+  "name": "Dragonfly Hall",
+  "params": [
+    {"key": "dry_level", "name": "Dry Level", "min": 0, "max": 100, "unit": "%", "default": 80},
+    {"key": "early_level", "name": "Early Level", "min": 0, "max": 100, "unit": "%", "default": 10},
+    {"key": "late_level", "name": "Late Level", "min": 0, "max": 100, "unit": "%", "default": 20},
+    {"key": "size", "name": "Size", "min": 10, "max": 60, "unit": "m", "default": 24},
+    {"key": "width", "name": "Width", "min": 50, "max": 150, "unit": "%", "default": 100},
+    {"key": "delay", "name": "Predelay", "min": 0, "max": 100, "unit": "ms", "default": 4},
+    {"key": "diffuse", "name": "Diffuse", "min": 0, "max": 100, "unit": "%", "default": 90},
+    {"key": "low_cut", "name": "Low Cut", "min": 0, "max": 200, "unit": "Hz", "default": 4},
+    {"key": "low_xo", "name": "Low Cross", "min": 200, "max": 1200, "unit": "Hz", "default": 500},
+    {"key": "low_mult", "name": "Low Mult", "min": 0.5, "max": 2.5, "unit": "X", "default": 1.29999995},
+    {"key": "high_cut", "name": "High Cut", "min": 1000, "max": 16000, "unit": "Hz", "default": 7600},
+    {"key": "high_xo", "name": "High Cross", "min": 1000, "max": 16000, "unit": "Hz", "default": 5500},
+    {"key": "high_mult", "name": "High Mult", "min": 0.200000003, "max": 1.20000005, "unit": "X", "default": 0.5},
+    {"key": "spin", "name": "Spin", "min": 0, "max": 10, "unit": "Hz", "default": 3.29999995},
+    {"key": "wander", "name": "Wander", "min": 0, "max": 40, "unit": "ms", "default": 15},
+    {"key": "decay", "name": "Decay", "min": 0.100000001, "max": 10, "unit": "s", "default": 1.29999995},
+    {"key": "early_send", "name": "Early Send", "min": 0, "max": 100, "unit": "%", "default": 20},
+    {"key": "modulation", "name": "Modulation", "min": 0, "max": 100, "unit": "%", "default": 15},
+    {"key": "preset", "name": "Preset", "options": ["Bright Room", "Clear Room", "Dark Room", "Small Chamber", "Large Chamber", "Acoustic Studio", "Electric Studio", "Percussion Studio", "Piano Studio", "Vocal Studio", "Small Bright Hall", "Small Clear Hall", "Small Dark Hall", "Small Percussion Hall", "Small Vocal Hall", "Medium Bright Hall", "Medium Clear Hall", "Medium Dark Hall", "Medium Percussion Hall", "Medium Vocal Hall", "Large Bright Hall", "Large Clear Hall", "Large Dark Hall", "Large Vocal Hall", "Great Hall"], "default": 11}
+  ]
+}

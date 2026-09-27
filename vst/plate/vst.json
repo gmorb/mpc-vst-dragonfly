@@ -1,0 +1,15 @@
+{
+  "name": "Dragonfly Plate",
+  "vendor": "Dragonfly",
+  "uid": "DfPl",
+  "version": 3210,
+  "so": "dragonfly_plate.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "upstream": "plate-reverb",
+  "glue_defines": [
+    "DF_PRESETS_FLAT",
+    "DF_HAS_ALGORITHM"
+  ],
+  "about": "Dragonfly Plate Reverb (Michael Willis, Rob van den Berg) as an MPC insert effect: three plate algorithms, 8 presets."
+}

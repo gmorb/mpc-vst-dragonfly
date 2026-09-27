@@ -1,0 +1,12 @@
+{
+  "name": "Dragonfly Hall",
+  "vendor": "Dragonfly",
+  "uid": "DfHl",
+  "version": 3210,
+  "so": "dragonfly_hall.so",
+  "params": "params.json",
+  "layout": "layout.conf",
+  "upstream": "hall-reverb",
+  "glue_defines": ["DF_PRESETS_BANKS"],
+  "about": "Dragonfly Hall Reverb (Michael Willis, Rob van den Berg) as an MPC insert effect: a lush hall reverb with early reflections, 25 presets."
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Dragonfly Room",
+  "params": [
+    {"key": "dry_level", "name": "Dry Level", "min": 0, "max": 100, "unit": "%", "default": 80},
+    {"key": "early_level", "name": "Early Level", "min": 0, "max": 100, "unit": "%", "default": 10},
+    {"key": "early_send", "name": "Early Send", "min": 0, "max": 100, "unit": "%", "default": 20},
+    {"key": "late_level", "name": "Late Level", "min": 0, "max": 100, "unit": "%", "default": 20},
+    {"key": "size", "name": "Size", "min": 8, "max": 32, "unit": "m", "default": 12},
+    {"key": "width", "name": "Width", "min": 50, "max": 150, "unit": "%", "default": 100},
+    {"key": "predelay", "name": "Predelay", "min": 0, "max": 100, "unit": "ms", "default": 8},
+    {"key": "decay", "name": "Decay", "min": 0.100000001, "max": 10, "unit": "s", "default": 0.400000006},
+    {"key": "diffuse", "name": "Diffuse", "min": 0, "max": 100, "unit": "%", "default": 70},
+    {"key": "spin", "name": "Spin", "min": 0, "max": 5, "unit": "Hz", "default": 0.800000012},
+    {"key": "wander", "name": "Wander", "min": 0, "max": 100, "unit": "%", "default": 40},
+    {"key": "in_high_cut", "name": "High Cut", "min": 1000, "max": 16000, "unit": "Hz", "default": 16000},
+    {"key": "early_damp", "name": "Early Damp", "min": 1000, "max": 16000, "unit": "Hz", "default": 10000},
+    {"key": "late_damp", "name": "Late Damp", "min": 1000, "max": 16000, "unit": "Hz", "default": 9400},
+    {"key": "low_boost", "name": "Low Boost", "min": 0, "max": 100, "unit": "%", "default": 50},
+    {"key": "boost_freq", "name": "Boost Freq", "min": 50, "max": 1050, "unit": "Hz", "default": 600},
+    {"key": "in_low_cut", "name": "Low Cut", "min": 0, "max": 200, "unit": "Hz", "default": 4},
+    {"key": "preset", "name": "Preset", "options": ["Small Bright Room", "Small Clear Room", "Small Dark Room", "Small Drum Room", "Small Vocal Room", "Medium Bright Room", "Medium Clear Room", "Medium Dark Room", "Medium Drum Room", "Medium Vocal Room", "Large Bright Room", "Large Clear Room", "Large Dark Room", "Large Drum Room", "Large Vocal Room", "Bright Hall", "Clear Hall", "Dark Hall", "Percussion Hall", "Vocal Hall", "Bright Plate", "Dark Plate", "Brick Wall", "Echo Chamber", "Long Tunnel"], "default": 6}
+  ]
+}

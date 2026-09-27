@@ -1,0 +1,8 @@
+# build outputs (vst/build.sh, vst/test.sh, tools/package.sh)
+vst/*/build/
+vst/.host/
+vst/.test/
+dist/
+__pycache__/
+*.pyc
+.DS_Store

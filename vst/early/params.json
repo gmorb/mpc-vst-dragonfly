@@ -1,0 +1,12 @@
+{
+  "name": "Dragonfly Early Reflections",
+  "params": [
+    {"key": "dry_level", "name": "Dry Level", "min": 0, "max": 100, "unit": "%", "default": 80},
+    {"key": "early_level", "name": "Wet Level", "min": 0, "max": 100, "unit": "%", "default": 20},
+    {"key": "program", "name": "Program", "options": ["Abrupt Echo", "Backstage Pass", "Concert Venue", "Damaged Goods", "Elevator Pitch", "Floor Thirteen", "Garage Band", "Home Studio"], "default": 2},
+    {"key": "size", "name": "Size", "min": 10, "max": 60, "unit": "m", "default": 20},
+    {"key": "width", "name": "Width", "min": 50, "max": 150, "unit": "%", "default": 100},
+    {"key": "low_cut", "name": "Low Cut", "min": 0, "max": 200, "unit": "Hz", "default": 50},
+    {"key": "high_cut", "name": "High Cut", "min": 1000, "max": 16000, "unit": "Hz", "default": 10000}
+  ]
+}
