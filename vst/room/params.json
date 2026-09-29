@@ -1,5 +1,5 @@
 {
-  "name": "Dragonfly Room",
+  "name": "Room",
   "params": [
     {"key": "dry_level", "name": "Dry Level", "min": 0, "max": 100, "unit": "%", "default": 80},
     {"key": "early_level", "name": "Early Level", "min": 0, "max": 100, "unit": "%", "default": 10},
@@ -18,6 +18,7 @@
     {"key": "low_boost", "name": "Low Boost", "min": 0, "max": 100, "unit": "%", "default": 50},
     {"key": "boost_freq", "name": "Boost Freq", "min": 50, "max": 1050, "unit": "Hz", "default": 600},
     {"key": "in_low_cut", "name": "Low Cut", "min": 0, "max": 200, "unit": "Hz", "default": 4},
-    {"key": "preset", "name": "Preset", "options": ["Small Bright Room", "Small Clear Room", "Small Dark Room", "Small Drum Room", "Small Vocal Room", "Medium Bright Room", "Medium Clear Room", "Medium Dark Room", "Medium Drum Room", "Medium Vocal Room", "Large Bright Room", "Large Clear Room", "Large Dark Room", "Large Drum Room", "Large Vocal Room", "Bright Hall", "Clear Hall", "Dark Hall", "Percussion Hall", "Vocal Hall", "Bright Plate", "Dark Plate", "Brick Wall", "Echo Chamber", "Long Tunnel"], "default": 6}
+    {"key": "preset", "name": "Preset", "options": ["Small Bright Room", "Small Clear Room", "Small Dark Room", "Small Drum Room", "Small Vocal Room", "Medium Bright Room", "Medium Clear Room", "Medium Dark Room", "Medium Drum Room", "Medium Vocal Room", "Large Bright Room", "Large Clear Room", "Large Dark Room", "Large Drum Room", "Large Vocal Room", "Bright Hall", "Clear Hall", "Dark Hall", "Percussion Hall", "Vocal Hall", "Bright Plate", "Dark Plate", "Brick Wall", "Echo Chamber", "Long Tunnel"], "default": 6},
+    {"key": "bank", "name": "Bank", "options": ["Small", "Medium", "Large", "Halls", "Effects"], "default": 1}
   ]
 }

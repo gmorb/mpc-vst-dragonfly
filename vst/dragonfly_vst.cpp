@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* =============================================================================
  * dragonfly_vst.cpp -- a Dragonfly Reverb plugin as a Linux VST2 *effect* for the built-in JUCE
  * plugin host of MPC OS standalone devices (mpc-vst-dragonfly).
@@ -20,6 +22,7 @@
 #include "params.h"
 #include "popup.h"
 #include "dsp_glue.h"
+#include "formats.h"      /* DF_FORMATS[]: the original UI's value formats (vst/gen_formats.py) */
 
 /* ---- VST2 ABI (hand-written; no Steinberg SDK) -------------------------- */
 struct AEffect;
@@ -61,6 +64,7 @@ struct wrap_t {
     void *dsp;
     double sr;
     int preset;                          /* last picked preset, -1 if none */
+    int bank_pick[16];                   /* per bank, its current preset (the original UI's currentProgram[]) */
     float open[NPARAMS];                 /* popup "open" flags (popup.h): never sent to the DSP or saved */
     volatile char release[NPARAMS];      /* popup flags to report back to 0 */
     volatile char changed[NPARAMS];      /* params a preset load changed: report their new value */
@@ -71,6 +75,7 @@ struct wrap_t {
 
 static int n_dsp;          /* upstream's paramCount: VST indices 0..n_dsp-1 */
 static int preset_idx;     /* VST index of the "preset" param, or -1 */
+static int bank_idx;       /* VST index of the "bank" param (Hall/Room), or -1 */
 
 static float clamp01(float v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 
@@ -88,6 +93,7 @@ static float norm_to_real(int i, float n) {
 static float get_real(wrap_t *w, int i) {
     if (i < n_dsp) return df_get(w->dsp, i);
     if (i == preset_idx) return (float)(w->preset < 0 ? 0 : w->preset);
+    if (i == bank_idx) return (float)((w->preset < 0 ? df_default_preset() : w->preset) / df_presets_per_bank());
     return 0;
 }
 static float get_norm(wrap_t *w, int i) {
@@ -100,6 +106,11 @@ static void load_preset(wrap_t *w, int k) {
     if (k < 0 || k >= df_preset_count()) return;
     const float *v = df_preset_values(k);
     w->preset = k;
+    if (bank_idx >= 0) {
+        w->bank_pick[k / df_presets_per_bank()] = k % df_presets_per_bank();
+        w->changed[bank_idx] = 1;
+    }
+    if (preset_idx >= 0) w->changed[preset_idx] = 1;
     for (int j = 0; j < n_dsp; j++) {
         df_set(w->dsp, j, v[j]);
         w->changed[j] = 1;   /* tell the host (and so the MPC page) in processReplacing */
@@ -130,6 +141,10 @@ static void setParameter(AEffect *e, int32_t i, float n) {
     else if (i == preset_idx) {
         int k = (int)v;
         if (!nudge || k != w->preset) load_preset(w, k);   /* a pick (even the same one) reloads it */
+    } else if (i == bank_idx) {
+        /* As the original UI: picking a bank loads that bank's current preset. */
+        int b = (int)v;
+        if (!nudge || b != (int)get_real(w, bank_idx)) load_preset(w, b * df_presets_per_bank() + w->bank_pick[b]);
     }
     if (!nudge) popup_picked(w->open, w->release, i);      /* a list pick closes it; a nudge doesn't */
     w->need_update_display = 1;
@@ -185,6 +200,15 @@ static void format_value(wrap_t *w, int i, char *out, size_t len) {
         return;
     }
     float v = get_real(w, i), range = fabsf(p->max - p->min);
+    if (i < n_dsp && DF_FORMATS[i]) {       /* exactly as the original UI prints it */
+        char tmp[48];
+        if (!strcmp(DF_FORMATS[i], "%i%%")) snprintf(tmp, sizeof tmp, "%i%%", (int)v);
+        else snprintf(tmp, sizeof tmp, DF_FORMATS[i], v);
+        const char *t = tmp;
+        while (*t == ' ') t++;
+        snprintf(out, len, "%s", t);
+        return;
+    }
     int dec = range <= 3 ? 2 : range <= 20 ? 1 : 0;
     if (!strcmp(p->unit, "Hz") && v >= 1000) snprintf(out, len, "%.1f kHz", v / 1000.0f);
     else if (!strcmp(p->unit, "%")) snprintf(out, len, "%.0f%%", v);
@@ -224,6 +248,10 @@ static void set_chunk(wrap_t *w, const char *s) {
                 } else if (i == preset_idx) {
                     int k = (int)v;
                     w->preset = (k >= 0 && k < df_preset_count()) ? k : -1;
+                    if (w->preset >= 0 && bank_idx >= 0)
+                        w->bank_pick[w->preset / df_presets_per_bank()] = w->preset % df_presets_per_bank();
+                } else if (i == bank_idx) {
+                    continue;
                 }
                 w->changed[i] = 1;
             }
@@ -295,6 +323,13 @@ static int params_match(void) {
         if (NPARAMS <= n_dsp || strcmp(PARAMS[n_dsp].key, "preset") || PARAMS[n_dsp].nopts != df_preset_count()) return 0;
         preset_idx = n_dsp;
     }
+    bank_idx = -1;
+    if (df_bank_count() > 0) {
+        if (df_bank_count() > 16 || NPARAMS <= n_dsp + 1 || strcmp(PARAMS[n_dsp + 1].key, "bank") ||
+            PARAMS[n_dsp + 1].nopts != df_bank_count())
+            return 0;
+        bank_idx = n_dsp + 1;
+    }
     return 1;
 }
 
@@ -307,6 +342,7 @@ extern "C" __attribute__((visibility("default"))) AEffect *VSTPluginMain(audioMa
     if (!w->dsp) { free(w); return NULL; }
     w->master = master;
     w->preset = df_default_preset();
+    for (int b = 0; b < 16; b++) w->bank_pick[b] = df_bank_count() ? df_default_preset() % df_presets_per_bank() : 0;
     AEffect *e = &w->fx;
     e->magic = 0x56737450; /* 'VstP' */
     e->dispatcher = dispatcher;

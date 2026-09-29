@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 the mpc-vst-dragonfly contributors
 # Offline tests for the Dragonfly MPC plugins (run vst/build.sh first; it makes each plugin's params.h).
 #   vst/test.sh [hall room plate early]
 # 1. PC: builds each plugin for this machine under AddressSanitizer + UBSan and runs vst/effect_test.c on it.

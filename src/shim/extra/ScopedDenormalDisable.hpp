@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* Shim for DPF's extra/ScopedDenormalDisable.hpp (mpc-vst-dragonfly): flush denormals to zero
  * for the duration of a DSP run. A decaying reverb tail is exactly where denormals appear. */
 #pragma once

@@ -1,14 +1,16 @@
-# Dragonfly Reverb for Akai MPC and Force (Gen 1)
+# Dragonfly Reverb for MPC OS
+
+An unofficial port; not affiliated with or endorsed by the Dragonfly Reverb authors or by Akai Professional.
 
 Four reverbs from Dragonfly Reverb 3.2.10 (Michael Willis, Rob van den Berg), ported as native insert effects,
 each with a touchscreen page modelled on the original plugin's, Q-Link mapping and its presets:
 
-| Folder | Plugin | Presets |
+| Folder | Plugin (manufacturer "Dragonfly") | Presets |
 |---|---|---|
-| dragonfly.vst.Hall | Dragonfly Hall | 25, in 5 banks |
-| dragonfly.vst.Room | Dragonfly Room | 25, in 5 banks |
-| dragonfly.vst.Plate | Dragonfly Plate | 8, plus 3 reverb types |
-| dragonfly.vst.EarlyReflections | Dragonfly Early Reflections | 8 reflection types |
+| dragonfly.vst.Hall | Hall | 25, in 5 banks |
+| dragonfly.vst.Room | Room | 25, in 5 banks |
+| dragonfly.vst.Plate | Plate | 8, plus 3 reverb types |
+| dragonfly.vst.EarlyReflections | Early Refl | 8 reflection types |
 
 Version @VERSION@.
 
@@ -22,7 +24,7 @@ The steps below are written for the **Akai Force with MockbaMod**, which mounts 
 "Other firmware" below instead.
 
 ### Akai Force with MockbaMod (card at /media/662522)
-1. Copy the eight folders from the collection's `Dragonfly Plugins` folder into the `Synths` folder on the memory
+1. Copy the eight folders from this `Dragonfly Reverb for MPC OS` folder into the `Synths` folder on the memory
    card, next to `vstscanner.sh`: the four `dragonfly.vst.*` folders (the plugins) and the four
    `Dragonfly - VST - ...` folders (their pages). The page folders must sit directly in `Synths`, not inside
    another folder.
@@ -49,7 +51,9 @@ The scanner needs two paths: the folder holding the plugins, and MPC's settings 
 To restore the old plugin list, stop MPC (`systemctl stop acvs`), copy the backup back, and start it
 (`systemctl start acvs`).
 
-To update, replace both kinds of folder and run the scanner again; projects keep their settings. To remove a
+To update, replace both kinds of folder and run the scanner again; projects keep their settings.
+**From 1.1.x:** the page folders were renamed (e.g. `Dragonfly - VST - Dragonfly Hall` is now
+`Dragonfly - VST - Hall`), so delete the four old `Dragonfly - VST - Dragonfly ...` folders from `Synths`. To remove a
 plugin, delete its `dragonfly.vst.*` folder and its page folder, then run the scanner.
 
 MockbaMod: if a plugin shows MPC's plain parameter list instead of its own page, the card's `Synths` folder isn't one
@@ -57,10 +61,16 @@ of MPC's content locations: check `grep SynthContentLocations /data/Settings/MPC
 `Dragonfly - VST - ...` folders into the internal Synths folder instead (other firmware: step 5 above).
 
 ## Notes
+- Hall and Room have two Q-Link banks, MAIN and EQ (Hall) / TONE (Room), switched by the tab at the bottom of the
+  screen. Presets: tap a bank tab, then a preset, as in the original plugins.
+- The spectrogram (Hall, Room, Plate) shows the selected preset's reverb, computed as the original does. The
+  original redraws it as you turn knobs; here it changes with the preset only.
 - The scanner rebuilds MPC's whole plugin list from what it finds under `Synths`, so keep every plugin you use there.
 - CPU: Hall is the heaviest of the four. Start with one instance and check it plays cleanly before stacking more.
 - The C++ runtime is built in; the plugins need nothing from the device but libc.
 
 ## Licence and source
-GPL-3.0-or-later (`LICENSE`), as upstream Dragonfly Reverb and freeverb3. Source code: @SOURCE@
+GPL-3.0-or-later (`LICENSE`), as Dragonfly Reverb (Copyright (c) 2018-2019 Michael Willis, Rob van den Berg)
+and freeverb3 (Copyright (C) 2006-2018 Teru Kamogashira and others). `NOTICE.md` lists every component with its
+authors and licence; `licenses/` holds the licence texts. Source code: @SOURCE@
 Upstream: https://github.com/michaelwillis/dragonfly-reverb

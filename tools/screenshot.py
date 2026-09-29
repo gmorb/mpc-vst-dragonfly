@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 the mpc-vst-dragonfly contributors
 """screenshot.py -- render a built MPC page the way MPC lays it out, for docs (mpc-vst-dragonfly).
 
   tools/screenshot.py <hall|room|plate|early> <out.png>      (after vst/build.sh)
@@ -26,9 +28,16 @@ def jfont(style, height):
     return ImageFont.truetype(path, max(1, round(height * 100.0 / (a + d))))
 
 
+FORMATS = []
+
+
 def display(p, v):
     if p.get("options"):
         return p["options"][int(v)]
+    i = p.get("_index", -1)
+    if 0 <= i < len(FORMATS) and FORMATS[i]:           # the original UI's printf format (vst/<p>/build/formats.h)
+        f = FORMATS[i]
+        return ("%d%%" % int(v)) if f == "%i%%" else (f % v).strip()
     unit, rng = p.get("unit", ""), abs(p["max"] - p["min"])
     dec = 2 if rng <= 3 else 1 if rng <= 20 else 0
     if unit == "Hz" and v >= 1000:
@@ -49,6 +58,13 @@ def norm(p, v):
 def main(plugin, out):
     vd = os.path.join(ROOT, "vst", plugin)
     params = json.load(open(os.path.join(vd, "params.json")))["params"]
+    for i, q in enumerate(params):
+        q["_index"] = i
+    fh = os.path.join(vd, "build", "formats.h")
+    if os.path.exists(fh):
+        import re
+        FORMATS[:] = [None if m == "NULL" else m.strip('"').replace("%%", "%%")
+                      for m in re.findall(r'^\s*("(?:[^"\\]|\\.)*"|NULL),', open(fh).read(), re.M)]
     skin_root = os.path.join(vd, "build", "skin")
     skin = os.path.join(skin_root, os.listdir(skin_root)[0], "Plugin Skins")
     tui = json.load(open(os.path.join(skin, "TUI.json")))
@@ -65,6 +81,8 @@ def main(plugin, out):
         return None
 
     def label(d, sub, x0, y0, s):
+        if sub["bounds"]["bounds"].split()[2] == "0":
+            return
         ts = sub["componentData"]["data"]["textStyle"]
         f = jfont(ts["font"]["style"], ts["font"]["height"])
         x, y, w, h = map(int, sub["bounds"]["bounds"].split())
@@ -73,12 +91,27 @@ def main(plugin, out):
         left = "Left" in ts["justification"]
         d.text((x0 + x + (0 if left else w / 2.0), y0 + y + h / 2.0), s, font=f, fill=col, anchor="lm" if left else "mm")
 
+    def visible(ch):     # MPC's IndexedEnabling/<i>/<n>/Parameter <p>, at the parameters' defaults
+        for h in ch["bounds"].get("additionalInvalidatingHandles", []):
+            if h.startswith("IndexedEnabling/"):
+                _, i, n, prm = h.split("/")
+                q = params[int(prm.split()[1])]
+                if int(round(norm(q, q["default"]) * (int(n) - 1))) != int(i):
+                    return False
+        return True
+
     for ch in tab["componentsData"]:
         cd = ch["componentData"]
+        if not visible(ch):
+            continue
         t = cd["type"]
         x0, y0, w0, h0 = map(int, ch["bounds"]["bounds"].split())
         if t == "Image" and cd["name"] == "Background":
             page = Image.open(os.path.join(skin, cd["data"]["image"])).convert("RGBA")
+            continue
+        if t == "Image" and page is not None:     # other pictures (e.g. the spectrogram), where visible
+            pic = Image.open(os.path.join(skin, cd["data"]["image"])).convert("RGBA").resize((w0, h0))
+            page.alpha_composite(pic, (x0, y0))
             continue
         if page is None or t.startswith(("shPopPanel_", "shPopOpt_")):
             continue

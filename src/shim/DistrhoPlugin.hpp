@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* Shim for the two things Dragonfly's DSP.cpp takes from DPF's DistrhoPlugin.hpp (mpc-vst-dragonfly).
  * The MPC port has no DPF: the VST2 layer is vst/dragonfly_vst.cpp. */
 #pragma once

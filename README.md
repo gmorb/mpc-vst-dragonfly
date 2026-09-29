@@ -25,7 +25,7 @@ The steps below are written for the **Akai Force with MockbaMod**, which mounts 
 [Other firmware](#other-firmware-or-no-662522-card) instead.
 
 ### Akai Force with MockbaMod (card at /media/662522)
-1. Copy the eight folders from the collection's `Dragonfly Plugins` folder into the `Synths` folder on the memory
+1. Copy the eight folders from its `Dragonfly Reverb for MPC OS` folder into the `Synths` folder on the memory
    card, next to `vstscanner.sh`: the four `dragonfly.vst.*` folders (the plugins) and the four
    `Dragonfly - VST - ...` folders (their pages). The page folders must sit directly in `Synths`, not inside
    another folder.
@@ -53,9 +53,6 @@ To restore the old plugin list, stop MPC (`systemctl stop acvs`), copy the backu
 (`systemctl start acvs`).
 
 The collection's own README repeats these steps and covers updating and removing plugins.
-
-### Updating
-Copy the eight folders over the old ones, then run the scanner again. No need to remove anything.
 
 ## Screenshots
 | Room | Plate | Early Reflections |
@@ -109,7 +106,7 @@ save/restore, foreign chunks refused, 48 kHz, and a parameter sweep during playb
 under AddressSanitizer + UBSan and against the device `.so` files under qemu-arm.
 
 ## Package and release
-- `tools/package.sh` builds `dist/Dragonfly-Force-VST-Collection-<VERSION>.zip`, `dist/SHA256SUMS` and the release
+- `tools/package.sh` builds `dist/Dragonfly-Reverb-for-MPC-OS-<VERSION>.zip`, `dist/SHA256SUMS` and the release
   notes (from this version's `CHANGELOG.md` section).
 - `tools/screenshot.py <plugin> <out.png>` renders a page as MPC lays it out, for `docs/screenshots/`.
 - CI (`.github/workflows/build.yml`) builds, tests and packages every push and pull request (the zip is a

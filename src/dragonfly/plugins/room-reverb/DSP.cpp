@@ -1,6 +1,9 @@
 /*
  * Dragonfly Reverb, copyright (c) 2019 Michael Willis, Rob van den Berg
  *
+ * Modified 2026-09-25 by the mpc-vst-dragonfly contributors: mute() also clears the input filters
+ * (see src/VENDORED.md).
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 3 of
@@ -173,7 +176,7 @@ void DragonflyReverbDSP::sampleRateChanged(double newSampleRate) {
 }
 
 void DragonflyReverbDSP::mute() {
-  // mpc-vst-dragonfly: also clear the input filters, so a resume starts from true silence
+  // Modified 2026-09-25 by mpc-vst-dragonfly: also clear the input filters, so a resume starts from true silence
   input_lpf_0.mute();
   input_lpf_1.mute();
   input_hpf_0.mute();

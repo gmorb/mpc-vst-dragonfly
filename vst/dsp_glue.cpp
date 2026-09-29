@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* dsp_glue.cpp -- the only translation unit that sees Dragonfly's own headers (mpc-vst-dragonfly).
  *
  * Built once per plugin with -I src/dragonfly/plugins/<plugin> first on the include path, so
@@ -28,18 +30,27 @@ int df_default_preset(void) { return DEFAULT_BANK * PRESETS_PER_BANK + DEFAULT_P
 const char *df_preset_bank(int p) { return banks[p / PRESETS_PER_BANK].name; }
 const char *df_preset_name(int p) { return banks[p / PRESETS_PER_BANK].presets[p % PRESETS_PER_BANK].name; }
 const float *df_preset_values(int p) { return banks[p / PRESETS_PER_BANK].presets[p % PRESETS_PER_BANK].params; }
+int df_bank_count(void) { return NUM_BANKS; }
+int df_presets_per_bank(void) { return PRESETS_PER_BANK; }
+const char *df_bank_name(int b) { return (b >= 0 && b < NUM_BANKS) ? banks[b].name : ""; }
 #elif defined(DF_PRESETS_FLAT)
 int df_preset_count(void) { return NUM_PRESETS; }
 int df_default_preset(void) { return DEFAULT_PRESET; }
 const char *df_preset_bank(int) { return ""; }
 const char *df_preset_name(int p) { return presets[p].name; }
 const float *df_preset_values(int p) { return presets[p].params; }
+int df_bank_count(void) { return 0; }
+int df_presets_per_bank(void) { return 0; }
+const char *df_bank_name(int) { return ""; }
 #else
 int df_preset_count(void) { return 0; }
 int df_default_preset(void) { return -1; }
 const char *df_preset_bank(int) { return ""; }
 const char *df_preset_name(int) { return ""; }
 const float *df_preset_values(int) { return DEFAULTS; }
+int df_bank_count(void) { return 0; }
+int df_presets_per_bank(void) { return 0; }
+const char *df_bank_name(int) { return ""; }
 #endif
 
 float df_default(int i) {

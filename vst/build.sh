@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 the mpc-vst-dragonfly contributors
 # Build the Dragonfly Reverb plugins as MPC OS VST2 effects (armhf).
 #   vst/build.sh [hall room plate early]        (default: all four)
 # Per plugin, in vst/<plugin>/build/:
@@ -41,10 +43,18 @@ for P in $PLUGINS; do
   g++ -O1 -w -std=gnu++11 -DLIBFV3_FLOAT $DEFS $INC -Isrc/shim -Isrc/dragonfly/common -Ivst \
       vst/dump_params.cpp vst/dsp_glue.cpp "src/dragonfly/plugins/$UP/DSP.cpp" $FV_SRC -lm -o "vst/.host/dump_$P"
   "vst/.host/dump_$P" "$NAME" > "vst/$P/params.json"
+  python3 vst/gen_formats.py "src/dragonfly/plugins/$UP" "$B/formats.h"
+  if python3 -c "import json,sys; sys.path.insert(0,'vst'); import df_skin; sys.exit(0 if df_skin.DESIGNS['$P'].get('spectrogram') is not None else 1)"; then
+    # the original's spectrogram, rendered per preset (df_paint.py turns these into pictures)
+    g++ -O2 -w -std=gnu++11 -DLIBFV3_FLOAT $DEFS $INC -Isrc/shim -Isrc/dragonfly/common -Ivst \
+        vst/spectrogram_dump.cpp vst/dsp_glue.cpp "src/dragonfly/plugins/$UP/DSP.cpp" $FV_SRC -lm -o "vst/.host/spectro_$P"
+    rm -rf "$B/spectro"; mkdir -p "$B/spectro"; "vst/.host/spectro_$P" "$B/spectro"
+  fi
 
   # 2. the page layout (from vst/df_skin.py's spec), then params.h, skin and plugin-list entry
   #    (mpc-vst-plugins' generator), then the Dragonfly look painted over the kit's images, and the entry
   #    made an effect
+  rm -rf "$B/skin"      # the page folder is named after the plugin: never keep one from an older name
   python3 vst/df_skin.py layout "$P"
   SHADOW_ART="$ROOT/vst/.host/shadow_art" python3 "$MPC_VST/tools/gen_vst.py" "$CFG"
   python3 vst/df_skin.py paint "$P"

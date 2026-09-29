@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* C API of dsp_glue.cpp (one Dragonfly plugin's DSP, parameters and presets). Values are in the
  * plugin's own units (%, m, ms, Hz, s, or an option index), exactly as upstream's DSP takes them. */
 #pragma once
@@ -21,6 +23,9 @@ int df_default_preset(void);
 const char *df_preset_bank(int p);
 const char *df_preset_name(int p);
 const float *df_preset_values(int p);       /* df_param_count() values */
+int df_bank_count(void);                    /* Hall/Room: presets come in banks (0: no banks) */
+int df_presets_per_bank(void);
+const char *df_bank_name(int b);
 
 void *df_create(double sample_rate);
 void df_destroy(void *d);

@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* effect_test.c -- offline test of a Dragonfly MPC plugin .so (mpc-vst-dragonfly).
  * dlopens the plugin like MPC's host does and checks, per plugin:
  *   two independent instances; magic, stereo in/out, effect category, chunk flag;
@@ -164,6 +166,20 @@ int main(int argc, char **argv) {
         a->setP(a, 0, 0.123f);   /* a user tweak... */
         a->setP(a, preset, 0.0f); for (int i = 0; i < n_dsp; i++) back &= a->getP(a, i) == v0[i];
         CHECK(differ > 0 && back, "first/last preset differ in %d params; re-picking a preset overrides tweaks", differ);
+        int bank = find(a, "Bank");
+        if (bank >= 0) {   /* the original UI: picking a bank loads that bank's current preset */
+            int nb = 0;
+            for (int k = 1; k < 16; k++) { a->setP(a, bank, 1.0f / k); if (fabsf(a->getP(a, bank) - 1.0f / k) < 1e-4f) nb = k + 1; }
+            int per = n / nb;
+            a->setP(a, preset, (float)(1 * per + 3) / (n - 1));          /* bank 1, its 4th preset */
+            a->setP(a, preset, (float)(3 * per + 0) / (n - 1));          /* bank 3, its 1st */
+            CHECK(fabsf(a->getP(a, bank) - 3.0f / (nb - 1)) < 1e-4f, "bank follows the loaded preset (%d banks of %d)", nb, per);
+            a->setP(a, bank, 1.0f / (nb - 1));                            /* back to bank 1 */
+            CHECK(fabsf(a->getP(a, preset) - (float)(1 * per + 3) / (n - 1)) < 1e-4f,
+                  "picking a bank loads the preset last picked in it");
+            char dsp_[64]; a->d(a, effGetParamDisplay, bank, 0, dsp_, 0);
+            CHECK(dsp_[0] != 0, "bank shows its name (%s)", dsp_);
+        }
         if (open >= 0) {
             memset(automated, 0, sizeof automated);
             a->setP(a, open, 1.0f);

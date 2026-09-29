@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (c) 2026 the mpc-vst-dragonfly contributors */
 /* dump_params.cpp -- print one Dragonfly plugin's parameter list as mpc-vst-plugins params.json
  * (tools/params.py format), straight from upstream's DistrhoPluginInfo.h via dsp_glue.
  * Built for the build host, linked with the same dsp_glue.cpp as the plugin:
@@ -39,7 +41,12 @@ int main(int argc, char **argv) {
     if (df_preset_count()) {
         printf("    {\"key\": \"preset\", \"name\": \"Preset\", \"options\": [");
         for (int k = 0; k < df_preset_count(); k++) { if (k) printf(", "); js(df_preset_name(k)); }
-        printf("], \"default\": %d}\n", df_default_preset());
+        printf("], \"default\": %d}%s\n", df_default_preset(), df_bank_count() ? "," : "");
+    }
+    if (df_bank_count()) {   /* the original UI's bank tabs: picking one loads that bank's current preset */
+        printf("    {\"key\": \"bank\", \"name\": \"Bank\", \"options\": [");
+        for (int b = 0; b < df_bank_count(); b++) { if (b) printf(", "); js(df_bank_name(b)); }
+        printf("], \"default\": %d}\n", df_default_preset() / df_presets_per_bank());
     }
     printf("  ]\n}\n");
     return 0;

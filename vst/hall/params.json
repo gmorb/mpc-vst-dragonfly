@@ -1,5 +1,5 @@
 {
-  "name": "Dragonfly Hall",
+  "name": "Hall",
   "params": [
     {"key": "dry_level", "name": "Dry Level", "min": 0, "max": 100, "unit": "%", "default": 80},
     {"key": "early_level", "name": "Early Level", "min": 0, "max": 100, "unit": "%", "default": 10},
@@ -19,6 +19,7 @@
     {"key": "decay", "name": "Decay", "min": 0.100000001, "max": 10, "unit": "s", "default": 1.29999995},
     {"key": "early_send", "name": "Early Send", "min": 0, "max": 100, "unit": "%", "default": 20},
     {"key": "modulation", "name": "Modulation", "min": 0, "max": 100, "unit": "%", "default": 15},
-    {"key": "preset", "name": "Preset", "options": ["Bright Room", "Clear Room", "Dark Room", "Small Chamber", "Large Chamber", "Acoustic Studio", "Electric Studio", "Percussion Studio", "Piano Studio", "Vocal Studio", "Small Bright Hall", "Small Clear Hall", "Small Dark Hall", "Small Percussion Hall", "Small Vocal Hall", "Medium Bright Hall", "Medium Clear Hall", "Medium Dark Hall", "Medium Percussion Hall", "Medium Vocal Hall", "Large Bright Hall", "Large Clear Hall", "Large Dark Hall", "Large Vocal Hall", "Great Hall"], "default": 11}
+    {"key": "preset", "name": "Preset", "options": ["Bright Room", "Clear Room", "Dark Room", "Small Chamber", "Large Chamber", "Acoustic Studio", "Electric Studio", "Percussion Studio", "Piano Studio", "Vocal Studio", "Small Bright Hall", "Small Clear Hall", "Small Dark Hall", "Small Percussion Hall", "Small Vocal Hall", "Medium Bright Hall", "Medium Clear Hall", "Medium Dark Hall", "Medium Percussion Hall", "Medium Vocal Hall", "Large Bright Hall", "Large Clear Hall", "Large Dark Hall", "Large Vocal Hall", "Great Hall"], "default": 11},
+    {"key": "bank", "name": "Bank", "options": ["Rooms", "Studios", "Small Halls", "Medium Halls", "Large Halls"], "default": 2}
   ]
 }
