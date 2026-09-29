@@ -3,6 +3,12 @@
 ## 1.2
 The package is now called **Dragonfly Reverb for MPC OS**.
 
+Packaged in the Force VST plugins distribution layout: one self-contained folder per plugin
+(`Dragonfly - VST - Hall/` with `Hall.so`, `plugin-meta.xml`, `version.xml`, `Hall.json`, `Plugin Skins/` and its
+licences), registered by the distribution's `vstscanner.sh`. From 1.1.x, delete the old `dragonfly.vst.*` and
+`Dragonfly - VST - Dragonfly ...` folders before installing. Projects saved with 1.1.x reference the old plugin file
+paths; check that they reopen with the plugins.
+
 Every page rebuilt to match the original plugin's UI (upstream's UI.cpp positions and artwork):
 - Layouts as the originals: Hall and Room with the bank tabs and preset list at the top, the modulation knobs top
   right, the level faders on the left, Size/Width over Predelay/Decay, the spectrogram in the middle, the EQ/tone

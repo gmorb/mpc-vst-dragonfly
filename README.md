@@ -14,45 +14,21 @@ touchscreen page modelled on the original plugin's UI, Q-Link mapping, its prese
 | **Early Refl** (Early Reflections) | 8 reflection types |
 
 ## Install
-Download `Dragonfly-Reverb-for-MPC-OS-<version>.zip` from [Releases](../../releases).
+Download `Dragonfly-Reverb-for-MPC-OS-<version>.zip` from [Releases](../../releases). It follows the Force VST
+plugins distribution layout ([docs/DISTRIBUTION.md](docs/DISTRIBUTION.md)): one self-contained folder per plugin.
 
-The plugins work on **Gen 1 Akai MPC and Akai Force** units (Force, MPC Live, Live II, One, X, Key 61) with SSH
-access through custom firmware. They are registered with `vstscanner.sh` from the Force VST distribution; copy it
-along with the plugins.
+Requires a Gen 1 Akai Force or MPC with SSH access (modded firmware such as MockbaMod) and the distribution's
+`Synths` folder with `vstscanner.sh`. The steps are written for the **Akai Force with MockbaMod**, which mounts its
+memory card at `/media/662522`:
 
-The steps below are written for the **Akai Force with MockbaMod**, which mounts its memory card at
-`/media/662522`. On other custom firmware (for example Hakai), or without that `662522` card, use
-[Other firmware](#other-firmware-or-no-662522-card) instead.
+1. Copy the four `Dragonfly - VST - ...` folders into `/media/662522/Synths` (next to `vstscanner.sh`).
+2. On the device: `sh /media/662522/Synths/vstscanner.sh` (afterwards just `vstscanner`). MPC restarts; the
+   plugins are under VST, manufacturer "Dragonfly".
 
-### Akai Force with MockbaMod (card at /media/662522)
-1. Copy the eight folders from its `Dragonfly Reverb for MPC OS` folder into the `Synths` folder on the memory
-   card, next to `vstscanner.sh`: the four `dragonfly.vst.*` folders (the plugins) and the four
-   `Dragonfly - VST - ...` folders (their pages). The page folders must sit directly in `Synths`, not inside
-   another folder.
-2. Run the scanner: `ssh ip-of-force 'sh /media/662522/Synths/vstscanner.sh'`
-3. MPC restarts. The plugins are under the VST category, manufacturer "Dragonfly".
-
-### Other firmware, or no 662522 card
-The scanner needs two paths: the folder holding the plugins, and MPC's settings file. Find yours first.
-
-1. SSH into the device and find where to put the plugins:
-   - a memory card: `ls /media` lists the mounted cards (the internal drive is `az01-internal`); or
-   - the internal storage: `/sdcard` (the plugins can run from there).
-   Below, `<dir>` means that location plus `/Synths`, e.g. `/media/MYCARD/Synths` or `/sdcard/Synths`.
-2. Find the settings file: `find / -name MPC.settings 2>/dev/null`. It is usually
-   `/media/az01-internal/Settings/MPC/MPC.settings`. Below, `<settings>` means that path. Back it up:
-   `cp "<settings>" "<settings>.bak"`
-3. Create `<dir>` and copy `vstscanner.sh` and the eight folders into it (as in step 1 above).
-4. Run the scanner with both paths: `sh <dir>/vstscanner.sh <dir> <settings>`
-   (Without them it assumes MockbaMod's `/data/Settings/MPC/MPC.settings` and stops if that isn't there.)
-5. MPC restarts and the plugins appear under VST. If a plugin shows MPC's plain parameter list instead of its own
-   page, MPC doesn't look for pages in `<dir>`: check `grep SynthContentLocations "<settings>"` and copy the four
-   `Dragonfly - VST - ...` folders into one of the folders it lists (usually `/sdcard/Synths`).
-
-To restore the old plugin list, stop MPC (`systemctl stop acvs`), copy the backup back, and start it
-(`systemctl start acvs`).
-
-The collection's own README repeats these steps and covers updating and removing plugins.
+Other custom firmware (for example Hakai), or no `662522` card: put the folders in a `Synths` folder on any drive
+under `/media` (e.g. `/media/az01-internal/Synths`), find MPC's settings file (`find / -name MPC.settings`), and
+run `sh <that Synths folder>/vstscanner.sh <settings path>`. The release's README has the full steps, updating
+from 1.1.x, and troubleshooting.
 
 ## Screenshots
 | Room | Plate | Early Reflections |
@@ -106,7 +82,8 @@ save/restore, foreign chunks refused, 48 kHz, and a parameter sweep during playb
 under AddressSanitizer + UBSan and against the device `.so` files under qemu-arm.
 
 ## Package and release
-- `tools/package.sh` builds `dist/Dragonfly-Reverb-for-MPC-OS-<VERSION>.zip`, `dist/SHA256SUMS` and the release
+- `tools/package.sh` builds `dist/Dragonfly-Reverb-for-MPC-OS-<VERSION>.zip` in the distribution layout
+  ([docs/DISTRIBUTION.md](docs/DISTRIBUTION.md)), `dist/SHA256SUMS` and the release
   notes (from this version's `CHANGELOG.md` section).
 - `tools/screenshot.py <plugin> <out.png>` renders a page as MPC lays it out, for `docs/screenshots/`.
 - CI (`.github/workflows/build.yml`) builds, tests and packages every push and pull request (the zip is a
