@@ -20,7 +20,8 @@ kept so a re-vendor is a plain copy.
   the old signal could still come out. Found by `vst/effect_test.c`.
 
 ## Artwork (MPC pages)
-`src/dragonfly/artwork/`: upstream's `NotoSans-Regular.ttf` (SIL OFL) and, per plugin, `knob.png` and
-`background.png` from `plugins/<plugin>/artwork/`. `vst/df_skin.py` / `vst/df_paint.py` sample the colours from them,
+`src/dragonfly/artwork/`: upstream's `NotoSans-Regular.ttf` (SIL OFL 1.1, `OFL.txt` beside it) and, per plugin,
+`knob.png`, `background.png`, `tab_on.png` and `tab_off.png` from `plugins/<plugin>/artwork/` (GPL-3.0-or-later,
+as the rest of Dragonfly Reverb). `vst/df_skin.py` / `vst/df_paint.py` sample the colours from them,
 crop the logo + title from `background.png`, and redraw the knob, faders and panels in the same style at the MPC's
 size; baked text uses NotoSans, as upstream's UI does.

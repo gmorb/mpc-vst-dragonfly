@@ -1,20 +1,20 @@
 # Dragonfly Reverb for MPC OS
 
-The four [Dragonfly Reverb](https://github.com/michaelwillis/dragonfly-reverb) plugins (3.2.10) by Michael Willis and
+An unofficial port of the four [Dragonfly Reverb](https://github.com/michaelwillis/dragonfly-reverb) plugins (3.2.10) by Michael Willis and
 Rob van den Berg, ported as native insert effects for **Gen 1 Akai MPC and Akai Force** standalone devices. Each has a
 touchscreen page modelled on the original plugin's UI, Q-Link mapping, its presets, and full project recall.
 
 ![Dragonfly Hall on MPC](docs/screenshots/hall.png)
 
-| Plugin | Presets |
+| Plugin (manufacturer "Dragonfly") | Presets |
 |---|---|
-| **Dragonfly Hall** | 25, in 5 banks |
-| **Dragonfly Room** | 25, in 5 banks |
-| **Dragonfly Plate** | 8, plus 3 reverb types |
-| **Dragonfly Early Reflections** | 8 reflection types |
+| **Hall** | 25, in 5 banks; Q-Link banks MAIN and EQ |
+| **Room** | 25, in 5 banks; Q-Link banks MAIN and TONE |
+| **Plate** | 8, plus 3 reverb types |
+| **Early Refl** (Early Reflections) | 8 reflection types |
 
 ## Install
-Download `Dragonfly-Force-VST-Collection-<version>.zip` from [Releases](../../releases).
+Download `Dragonfly-Reverb-for-MPC-OS-<version>.zip` from [Releases](../../releases).
 
 The plugins work on **Gen 1 Akai MPC and Akai Force** units (Force, MPC Live, Live II, One, X, Key 61) with SSH
 access through custom firmware. They are registered with `vstscanner.sh` from the Force VST distribution; copy it
@@ -54,12 +54,17 @@ To restore the old plugin list, stop MPC (`systemctl stop acvs`), copy the backu
 
 The collection's own README repeats these steps and covers updating and removing plugins.
 
+### Updating
+Copy the eight folders over the old ones, then run the scanner again. No need to remove anything.
+
 ## Screenshots
 | Room | Plate | Early Reflections |
 |---|---|---|
 | ![Dragonfly Room](docs/screenshots/room.png) | ![Dragonfly Plate](docs/screenshots/plate.png) | ![Dragonfly Early Reflections](docs/screenshots/early.png) |
 
-Rendered from the built pages by `tools/screenshot.py`, at the default settings.
+Rendered from the built pages by `tools/screenshot.py`, at the default settings. The spectrograms are computed at
+build time per preset, exactly as upstream's (`vst/spectrogram_dump.cpp` + `vst/df_paint.py`), and follow the
+selected preset.
 
 ## Status
 Alpha. Everything is tested offline (below), including the real ARM binaries under emulation, and the plugins run on
@@ -112,7 +117,9 @@ under AddressSanitizer + UBSan and against the device `.so` files under qemu-arm
   `git tag v<VERSION> && git push --tags`; CI publishes the GitHub release with the zip and checksums.
 
 ## Credits and licence
-Dragonfly Reverb by Michael Willis and Rob van den Berg; freeverb3 by Teru Kamogashira; NotoSans (SIL OFL).
-Built with [mpc-vst-plugins](https://github.com/sd88me/mpc-vst-plugins).
+Dragonfly Reverb by Michael Willis and Rob van den Berg; freeverb3 by Teru Kamogashira and others; Noto Sans by
+Google. Built with [mpc-vst-plugins](https://github.com/sd88me/mpc-vst-plugins). Not affiliated with or endorsed
+by the Dragonfly Reverb authors or by Akai Professional / inMusic.
 
-GPL-3.0-or-later ([LICENSE](LICENSE)), as upstream Dragonfly Reverb and freeverb3.
+GPL-3.0-or-later ([LICENSE](LICENSE)), as Dragonfly Reverb. Every component, its authors and licence:
+[NOTICE.md](NOTICE.md). Release zips include `NOTICE.md` and the licence texts (`licenses/`).
