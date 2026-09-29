@@ -33,7 +33,7 @@ Dragonfly Reverb is. Source code: this repository; every release is built from t
   release; the release's images contain text drawn with it.
 
 ### mpc-vst-plugins
-- https://github.com/sd88me/mpc-vst-plugins (sd88me), commit `39660f2b41c0a6d6e9f8c1f0e19378533d9bbc2f`
+- https://github.com/sd88me/mpc-vst-plugins (sd88me), commit `c0394f0352d77072f345bd929d26c6fc09bc34a0`
 - Used: its `wrapper/popup.h` is compiled into the plugins; its tools generate the page skins (TUI.json, Q-Links)
   and are run from a separate checkout at build time. Its bundled force-shadow tools are MIT-licensed
   (Copyright (c) 2026 sd88me). At that commit the repository itself states no licence.

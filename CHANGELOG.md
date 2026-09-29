@@ -1,9 +1,13 @@
 # Changelog
 
-## 1.2
+## 1.2.0
 The package is now called **Dragonfly Reverb for MPC OS**.
 
-Packaged in the Force VST plugins distribution layout: one self-contained folder per plugin
+Also released for the [MPC OS Plugin Catalog](https://sd88me.github.io/mpc-vst-plugins/): one
+`<Name>-1.2.0-mpc-armv7.zip` per plugin (installer, manifest, checksums), built with mpc-vst-plugins'
+`release.py` and passing its `catalog_check.py`. Built with mpc-vst-plugins `c0394f0`.
+
+The distribution zip is packaged in the Force VST plugins distribution layout: one self-contained folder per plugin
 (`Dragonfly - VST - Hall/` with `Hall.so`, `plugin-meta.xml`, `version.xml`, `Hall.json`, `Plugin Skins/` and its
 licences), registered by the distribution's `vstscanner.sh`. From 1.1.x, delete the old `dragonfly.vst.*` and
 `Dragonfly - VST - Dragonfly ...` folders before installing. Projects saved with 1.1.x reference the old plugin file

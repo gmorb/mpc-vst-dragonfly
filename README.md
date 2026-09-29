@@ -14,7 +14,12 @@ touchscreen page modelled on the original plugin's UI, Q-Link mapping, its prese
 | **Early Refl** (Early Reflections) | 8 reflection types |
 
 ## Install
-Download `Dragonfly-Reverb-for-MPC-OS-<version>.zip` from [Releases](../../releases). It follows the Force VST
+Two ways, from the same [Releases](../../releases). Use one per device (see [docs/CATALOG.md](docs/CATALOG.md)).
+
+**From the [MPC OS Plugin Catalog](https://sd88me.github.io/mpc-vst-plugins/)**: each reverb is its own
+`<Name>-<version>-mpc-armv7.zip` with an `install.sh`; the zip's `INSTALL.md` has the steps.
+
+**Force VST plugins distribution**: download `Dragonfly-Reverb-for-MPC-OS-<version>.zip`. It follows the Force VST
 plugins distribution layout ([docs/DISTRIBUTION.md](docs/DISTRIBUTION.md)): one self-contained folder per plugin.
 
 Requires a Gen 1 Akai Force or MPC with SSH access (modded firmware such as MockbaMod) and the distribution's
@@ -63,7 +68,7 @@ a Force; the MPC models share the same OS and plugin host. CPU load per instance
 ## Build
 ```
 git clone https://github.com/sd88me/mpc-vst-plugins ../mpc-vst-plugins
-git -C ../mpc-vst-plugins checkout 39660f2b41c0a6d6e9f8c1f0e19378533d9bbc2f   # the commit CI uses
+git -C ../mpc-vst-plugins checkout c0394f0352d77072f345bd929d26c6fc09bc34a0   # the commit CI uses
 pip install ziglang==0.16.0 pillow
 TOOLCHAIN=zig vst/build.sh          # all four; or: vst/build.sh hall plate
 ```
@@ -86,9 +91,13 @@ under AddressSanitizer + UBSan and against the device `.so` files under qemu-arm
   ([docs/DISTRIBUTION.md](docs/DISTRIBUTION.md)), `dist/SHA256SUMS` and the release
   notes (from this version's `CHANGELOG.md` section).
 - `tools/screenshot.py <plugin> <out.png>` renders a page as MPC lays it out, for `docs/screenshots/`.
-- CI (`.github/workflows/build.yml`) builds, tests and packages every push and pull request (the zip is a
-  workflow artifact). To release: bump `VERSION`, add its section to `CHANGELOG.md`, commit, then
-  `git tag v<VERSION> && git push --tags`; CI publishes the GitHub release with the zip and checksums.
+- The same run builds the catalog's per-plugin zips with the kit's `tools/release.py` and checks them with its
+  `catalog_check.py` (needs `REPO=owner/name` locally; CI uses the GitHub repo). `tools/catalog_entries.py`
+  writes the catalog registry entries. See [docs/CATALOG.md](docs/CATALOG.md).
+- CI (`.github/workflows/build.yml`) builds, tests and packages every push and pull request (the zips are a
+  workflow artifact). To release: bump `VERSION` (X.Y.Z), add its section to `CHANGELOG.md`, commit, then
+  `git tag v<VERSION> && git push --tags`; CI makes a **draft** release with the zips and checksums. Test the
+  zips on a device, then publish it.
 
 ## Credits and licence
 Dragonfly Reverb by Michael Willis and Rob van den Berg; freeverb3 by Teru Kamogashira and others; Noto Sans by

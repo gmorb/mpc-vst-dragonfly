@@ -53,7 +53,34 @@ sed -e "s|@VERSION@|$VERSION|" -e "s|@SOURCE@|$SOURCE|" packaging/README.md > "$
 find "$STAGE" -exec touch -d "2026-01-01 00:00:00" {} +      # stable zip bytes for the same inputs
 (cd "$STAGE" && find "Dragonfly Reverb for MPC OS" -type f | LC_ALL=C sort | zip -q -X -@ "../$(basename "$OUT")")
 rm -rf "$STAGE"
-(cd dist && sha256sum "$(basename "$OUT")" > SHA256SUMS)
+# ---- the MPC OS Plugin Catalog's zips (https://sd88me.github.io/mpc-vst-plugins/): one per plugin, built by the
+# kit's own tools/release.py (install.sh / uninstall.sh / manifest / SHA256SUMS) and checked by its
+# catalog_check.py. The manifest's source_repo must be this repo: REPO=owner/name, or GitHub's GITHUB_REPOSITORY
+# in CI. Without either, the catalog zips are skipped (the collection zip above is still made).
+MPC_VST="${MPC_VST:-$PWD/../mpc-vst-plugins}"
+REPO="${REPO:-${GITHUB_REPOSITORY:-}}"
+declare -A CATID=([hall]=dragonfly-hall [room]=dragonfly-room [plate]=dragonfly-plate [early]=dragonfly-early-reflections)
+if [ -n "$REPO" ]; then
+  for p in hall room plate early; do
+    so=$(python3 -c "import json;print(json.load(open('vst/$p/vst.json'))['so'])")
+    name=$(python3 -c "import json;print(json.load(open('vst/$p/vst.json'))['name'])")
+    about=$(python3 -c "import json;print(json.load(open('vst/$p/vst.json'))['about'])")
+    B="vst/$p/build"
+    lic="dist/lic-$p"; mkdir -p "$lic"; cp LICENSE NOTICE.md "$lic/"
+    python3 "$MPC_VST/tools/release.py" --so "$B/$so" --skin "$B/skin/Dragonfly - VST - $name" \
+        --entry "$B/pluginlist-entry.xml" --version "$VERSION" --id "${CATID[$p]}" --repo "$REPO" \
+        --license GPL-3.0-or-later --about "$about" --extra "$lic:vst/${CATID[$p]}-licenses" -o dist >/dev/null
+    rm -rf "$lic"
+  done
+  for z in dist/*-mpc-armv7.zip; do
+    python3 "$MPC_VST/tools/catalog_check.py" "$z" --catalog >/dev/null || { echo "catalog_check failed: $z" >&2; \
+        python3 "$MPC_VST/tools/catalog_check.py" "$z" --catalog >&2; exit 1; }
+    echo "catalog zip ok: $z"
+  done
+else
+  echo "no REPO / GITHUB_REPOSITORY: catalog zips skipped (set REPO=owner/name)"
+fi
+(cd dist && sha256sum *.zip > SHA256SUMS)
 # release notes: this version's CHANGELOG.md section, then install notes
 awk -v v="$VERSION" '/^## /{on = ($2 == v)} on && !/^## /' CHANGELOG.md > dist/RELEASE_NOTES.md
 [ -s dist/RELEASE_NOTES.md ] || { echo "CHANGELOG.md has no '## $VERSION' section" >&2; exit 1; }

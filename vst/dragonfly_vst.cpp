@@ -66,7 +66,7 @@ struct wrap_t {
     int preset;                          /* last picked preset, -1 if none */
     int bank_pick[16];                   /* per bank, its current preset (the original UI's currentProgram[]) */
     float open[NPARAMS];                 /* popup "open" flags (popup.h): never sent to the DSP or saved */
-    volatile char release[NPARAMS];      /* popup flags to report back to 0 */
+    volatile int release[NPARAMS];       /* popup flags to report back to 0 (popup.h: "holdFrames") */
     volatile char changed[NPARAMS];      /* params a preset load changed: report their new value */
     volatile char need_update_display;
     float acc[2][ACC_BLOCK];

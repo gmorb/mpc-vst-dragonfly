@@ -56,6 +56,8 @@ To restore the old plugin list, stop MPC (`systemctl stop acvs`), copy the backu
 (`systemctl start acvs`).
 
 ## Notes
+- Install either this way (vstscanner) or with the MPC OS Plugin Catalog's per-plugin zips, not both on one
+  device: vstscanner rebuilds MPC's whole plugin list and would drop plugins installed with `install.sh`.
 - The scanner rebuilds MPC's whole plugin list from what it finds, so keep every plugin you use in a `Synths` folder.
 - Hall and Room have two Q-Link banks, MAIN and EQ (Hall) / TONE (Room), switched by the tab at the bottom of the
   screen. Presets: tap a bank tab, then a preset, as in the original plugins.

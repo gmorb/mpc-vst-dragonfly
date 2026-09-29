@@ -165,7 +165,12 @@ def paint(p, g, cols):
     pindex = {q["key"]: i for i, q in enumerate(plist)}
     ctl = {c["key"]: c for c in g["controls"]}
     fader_r, K = spec["fader"]
-    knob_def, fader_def = "shKnob%d" % S.KNOB_R, "shKnob%d" % fader_r
+    def def_named(prefix):   # the kit names knob components shKnob<r>, newer kits shKnob<r>_ls<scale>
+        found = [k for k in defs if k == prefix or k.startswith(prefix + "_")]
+        if len(found) != 1:
+            raise SystemExit("paint: expected one %s* component, found %s" % (prefix, found))
+        return found[0]
+    knob_def, fader_def = def_named("shKnob%d" % S.KNOB_R), def_named("shKnob%d" % fader_r)
     knob_s, fader_s = 2 * S.KNOB_R + 10, 2 * fader_r + 10
     track_w = fader_s - 6                 # px inside the track's border
     fader_cw = next(c["cw"] for c in g["controls"] if c["kind"] == "fader")
