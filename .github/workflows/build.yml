@@ -32,7 +32,7 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -y -q qemu-user libc6-armhf-cross zip
-          pip install --break-system-packages ziglang==0.16.0 pillow
+          pip install --break-system-packages ziglang==0.16.0 pillow numpy
 
       - name: Build (armhf, Zig, glibc 2.36)
         working-directory: mpc-vst-dragonfly

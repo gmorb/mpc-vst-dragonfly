@@ -69,7 +69,7 @@ a Force; the MPC models share the same OS and plugin host. CPU load per instance
 ```
 git clone https://github.com/sd88me/mpc-vst-plugins ../mpc-vst-plugins
 git -C ../mpc-vst-plugins checkout c0394f0352d77072f345bd929d26c6fc09bc34a0   # the commit CI uses
-pip install ziglang==0.16.0 pillow
+pip install ziglang==0.16.0 pillow numpy
 TOOLCHAIN=zig vst/build.sh          # all four; or: vst/build.sh hall plate
 ```
 Needs python3, a host gcc/g++, and Zig (above; what CI uses). `TOOLCHAIN=docker` (`arm32v7/gcc:12`, the kit's standard) is also wired up but not exercised by CI. Output per
