@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (c) 2026 the mpc-vst-dragonfly contributors
-"""catalog_entries.py --repo OWNER/NAME --author "NAME" [-o DIR]
+"""catalog_entries.py --owner OWNER --author "NAME" [-o DIR]
 
 Writes the four MPC OS Plugin Catalog registry entries (catalog/plugins/<id>.json in sd88me/mpc-vst-plugins),
-one per plugin, each picking its own zip from this repo's releases with asset_pattern. Add them to the catalog
-with one pull request (see docs/CATALOG.md). The ids must match tools/package.sh's --id values; never change them."""
+one per plugin. Each plugin is listed from its own repo, OWNER/mpc-vst-<id> (e.g. gmorb/mpc-vst-dragonfly-hall), whose
+releases carry that plugin's Gen1 (armv7) and Gen2 (aarch64) zips (docs/CATALOG.md); this repo is not listed. The
+ids must match tools/package.sh's --id values; never change them."""
 import argparse
 import json
 import os
@@ -25,7 +26,7 @@ PLUGINS = [
 ]
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--repo", required=True, help="this repo on GitHub, owner/name (the releases' source_repo)")
+ap.add_argument("--owner", required=True, help="GitHub owner of the per-plugin repos (mpc-vst-<id>)")
 ap.add_argument("--author", required=True, help="how the catalog should name you, the porter")
 ap.add_argument("-o", "--out", default="catalog-entries")
 a = ap.parse_args()
@@ -33,9 +34,9 @@ os.makedirs(a.out, exist_ok=True)
 for pid, name, pattern, tags, summary in PLUGINS:
     e = {"id": pid, "name": name,
          "author": "%s (port); Dragonfly Reverb by Michael Willis and Rob van den Berg" % a.author,
-         "repo": a.repo, "kind": "effect", "license": "GPL-3.0-or-later",
+         "repo": "%s/mpc-vst-%s" % (a.owner, pid), "kind": "effect", "license": "GPL-3.0-or-later",
          "summary": summary, "style": "reverb", "tags": ["dragonfly"] + tags,
-         "homepage": "https://github.com/%s" % a.repo, "asset_pattern": pattern}
+         "asset_pattern": pattern}
     path = os.path.join(a.out, pid + ".json")
     json.dump(e, open(path, "w"), indent=2)
     print(path)

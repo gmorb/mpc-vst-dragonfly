@@ -14,37 +14,53 @@ Each Dragonfly plugin is its own catalog entry, with one zip per device generati
 Gen2 the Synths folder MPC lists in `SynthContentLocations`, e.g. `/nvme/Synths` on a Live III. The collection zip
 (docs/DISTRIBUTION.md) names the `.so` files `Hall.so` etc. instead.)
 
-`tools/package.sh` builds them with the kit's `tools/release.py` (installer, manifest, checksums; the zip is named from
-the `.so`'s ELF machine) and checks each with its `tools/catalog_check.py --catalog`; CI does this for every tag (the
-repo name comes from GitHub). The registry entry stays one per plugin with the armv7 `asset_pattern`: the catalog
-finds the Gen2 zip by swapping `armv7` for `aarch64` and lists both (kit docs/GEN2.md). **The Gen2 zip must be on
-the same release as the Gen1 zip of the repo the entry points at.** The same release also carries the Force VST
-distribution zip (`Dragonfly-Reverb-for-MPC-OS-X.Y.Z.zip`, Gen1 only, docs/DISTRIBUTION.md), which the catalog ignores.
+**Where the catalog lists them from.** Each plugin's catalog entry points at its own repo, which holds that
+plugin's README, `LICENSE`, `tested.json`, banner, and releases with its two zips:
+
+| Catalog id | Repo |
+|---|---|
+| `dragonfly-hall` | `gmorb/mpc-vst-dragonfly-hall` |
+| `dragonfly-room` | `gmorb/mpc-vst-dragonfly-room` |
+| `dragonfly-plate` | `gmorb/mpc-vst-dragonfly-plate` |
+| `dragonfly-early-reflections` | `gmorb/mpc-vst-dragonfly-early-reflections` |
+
+This repo (`gmorb/mpc-vst-dragonfly`) holds all the source and builds everything, but is **not** in the catalog. Its
+releases carry the collection zip (`Dragonfly-Reverb-for-MPC-OS-X.Y.Z.zip`, Gen1 only, docs/DISTRIBUTION.md) and the
+same eight per-plugin zips; each per-plugin repo's release of the same version carries its plugin's two zips
+(byte-identical copies) and links back here, to the matching tag, for the source (GPL).
+
+`tools/package.sh` builds the zips with the kit's `tools/release.py` (installer, manifest, checksums; the zip is named
+from the `.so`'s ELF machine) and checks each with its `tools/catalog_check.py --catalog --expect-id --expect-repo`. The
+catalog requires a manifest's `source_repo` to equal the entry's `repo`, so the zips are built with the per-plugin
+repo, `<owner>/mpc-vst-<catalog id>` (`CATALOG_OWNER`, default the owner of this repo). CI does this for every tag.
+The registry entry stays one per plugin with the armv7 `asset_pattern`: the catalog finds the Gen2 zip by swapping
+`armv7` for `aarch64` and lists both (kit docs/GEN2.md). **Both zips must be on the same release of the per-plugin
+repo.** The catalog reads `tested.json` from the root of the per-plugin repo's default branch.
 
 **Never change** the ids, the plugins' uids or the `.so` names: projects and the catalog find the plugins by them.
 Gen1 and Gen2 zips share id, uid, version and parameters, so projects move between generations. Versions are `X.Y.Z`;
 bump X only if parameter positions change.
 
-## Listing the plugins (once)
-1. Publish a release (see Releasing below).
-2. Generate the four registry entries with your GitHub repo and the name to show:
-   `python3 tools/catalog_entries.py --repo <you>/mpc-vst-dragonfly --author "<your name>" -o catalog-entries`
-3. Fork https://github.com/sd88me/mpc-vst-plugins, copy the four files into its `catalog/plugins/`, and open one
-   pull request. Its check runs on the entries; a maintainer merges it. After that, new releases appear by
-   themselves (nightly).
+## Listing the plugins (done; for reference)
+The four entries are live in `sd88me/mpc-vst-plugins` `catalog/plugins/`. To regenerate them:
+`python3 tools/catalog_entries.py --owner gmorb --author gmorb -o catalog-entries`, then a pull request to
+`sd88me/mpc-vst-plugins` changing `catalog/plugins/<id>.json` (its check runs on the entries; a maintainer merges).
+New releases of the per-plugin repos appear by themselves (nightly).
 
 ## Releasing
 1. Bump `VERSION` (X.Y.Z) and add its `## X.Y.Z` section to `CHANGELOG.md`; commit and push.
-2. `git tag vX.Y.Z && git push --tags`. CI builds, tests, packages and makes a **draft** release with all zips.
+2. `git tag vX.Y.Z && git push --tags`. CI builds, tests, packages and makes a **draft** release with all zips here.
 3. On a device, smoke-test the draft's zips: install with a catalog zip's `install.sh`, load the plugin on a
    track, play it, turn every page and Q-Link, save and reload a project, then run `uninstall.sh`. Optionally
    measure CPU with the kit's `tools/bench.sh <.so> <device-ip> -j` (it picks the build for the device). Do the same
    with the `-mpc-aarch64.zip` files on a Gen2 device when one is available.
-4. Record it in `tested.json` at the repo root (the catalog shows it), commit, push. A Gen2 test needs "Gen2" in
-   `device` (it gives the "Verified Gen2" badge):
+4. Record it in `tested.json` at the root of **each per-plugin repo** (the catalog reads it there; keep this repo's
+   copy the same), commit, push. A Gen2 test needs "Gen2" in `device` (it gives the "Verified Gen2" badge):
    `[ { "version": "X.Y.Z", "device": "Force", "firmware": "<version>", "date": "YYYY-MM-DD" },
       { "version": "X.Y.Z", "device": "MPC Live III (Gen2)", "firmware": "<version>", "date": "YYYY-MM-DD" } ]`
-5. Publish the draft. The catalog lists it on its next run.
+5. Publish the draft here. Then, in each per-plugin repo, make release `vX.Y.Z` with that plugin's
+   `-mpc-armv7.zip` and `-mpc-aarch64.zip` from this release (the same files), and release notes linking to
+   `https://github.com/gmorb/mpc-vst-dragonfly/tree/vX.Y.Z` for the source. The catalog lists it on its next run.
 
 ## One install method per device
 The catalog zips' `install.sh` adds the plugin to MPC's plugin list directly. `vstscanner.sh` (Force VST

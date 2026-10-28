@@ -18,8 +18,11 @@ with upstream's own flags, and null-tested against upstream's binary ([docs/SOUN
 ## Install
 Two ways, from the same [Releases](../../releases). Use one per device (see [docs/CATALOG.md](docs/CATALOG.md)).
 
-**From the [MPC OS Plugin Catalog](https://sd88me.github.io/mpc-vst-plugins/)**: each reverb is its own
-zip with an `install.sh`; the zip's `INSTALL.md` has the steps. Gen1: `<Name>-<version>-mpc-armv7.zip`;
+**From the [MPC OS Plugin Catalog](https://sd88me.github.io/mpc-vst-plugins/)**: each reverb is listed from its own
+repo ([Hall](https://github.com/gmorb/mpc-vst-dragonfly-hall), [Room](https://github.com/gmorb/mpc-vst-dragonfly-room),
+[Plate](https://github.com/gmorb/mpc-vst-dragonfly-plate),
+[Early Reflections](https://github.com/gmorb/mpc-vst-dragonfly-early-reflections)); the same zips are on this repo's
+releases. Each is a zip with an `install.sh`; the zip's `INSTALL.md` has the steps. Gen1: `<Name>-<version>-mpc-armv7.zip`;
 Gen2: `<Name>-<version>-mpc-aarch64.zip` (the installer refuses the wrong one; the catalog's installers pick the right
 one). Same plugin ids and parameters on both, so projects move between generations.
 
@@ -49,9 +52,9 @@ build time per preset, exactly as upstream's (`vst/spectrogram_dump.cpp` + `vst/
 selected preset.
 
 ## Status
-Alpha. Everything is tested offline (below), including the real ARM binaries under emulation. The Gen1 builds run
-on a Force; the MPC models share the same OS and plugin host. **The Gen2 builds have not been run on a Gen2 device
-yet.** CPU load per instance has not been measured on a device yet; Hall is the heaviest of the four (instruction
+Alpha. Everything is tested offline (below), including the real ARM binaries under emulation. 1.3.0 is tested on
+an Akai Force (Gen1) and an MPC Live III (Gen2), both MPC OS 3.9.1 (`tested.json`); the other models of each generation
+share the same OS and plugin host. CPU load per instance has not been measured on a device yet; Hall is the heaviest of the four (instruction
 counts under emulation: docs/SOUND.md).
 
 ## How it works
@@ -108,7 +111,8 @@ same sources with upstream's x86 flags, and null-tests them against each other; 
   notes (from this version's `CHANGELOG.md` section).
 - `tools/screenshot.py <plugin> <out.png>` renders a page as MPC lays it out, for `docs/screenshots/`.
 - The same run builds the catalog's per-plugin zips, Gen1 and Gen2, with the kit's `tools/release.py` and checks
-  them with its `catalog_check.py` (needs `REPO=owner/name` locally; CI uses the GitHub repo). The pages come from the
+  them with its `catalog_check.py` (needs `CATALOG_OWNER=owner` locally, e.g. `gmorb`; CI uses the repo's owner). Each
+  zip names its per-plugin repo (`<owner>/mpc-vst-<id>`) as its source repo, as the catalog requires. The pages come from the
   pinned kit (`MPC_VST`); the packaging tools can come from a newer one (`MPC_VST_RELEASE`; CI pins both). `tools/catalog_entries.py`
   writes the catalog registry entries. See [docs/CATALOG.md](docs/CATALOG.md).
 - CI (`.github/workflows/build.yml`) builds, tests and packages every push and pull request (the zips are a

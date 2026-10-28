@@ -5,7 +5,7 @@
 
 - **Gen2 (64-bit) MPCs**: every release now also has `<Name>-1.3.0-mpc-aarch64.zip` per plugin for the MPC Live III,
   One G2 and Key G2, next to the Gen1 `-mpc-armv7.zip`. Same plugin ids, uids, parameters and pages, so projects
-  move between generations. The catalog lists both from the same entry. Not yet tested on a Gen2 device.
+  move between generations. The catalog lists both from the same entry.
 - **Sound: matched to upstream's own builds.** Upstream compiles the DSP with `-O3 -ffast-math`; 1.2.0 used strict
   IEEE floats, which turned out to build a slightly different Hall and Room on some presets: Hall's input diffusers
   (`zrev2.cpp`) and Room's late reverb (`progenitor2.cpp`) compute delay lengths with a division that fast-math does
@@ -18,7 +18,7 @@
   x86 CPU with FMA and one without). Gen1 and Gen2 null to -98 dB or better against each other. docs/SOUND.md.
 - **Gen1: NEON + VFPv4** (`-mcpu=cortex_a17`; 1.2.0 was VFPv3-D16 without NEON). Every Gen1 device is an RK3288
   (Cortex-A17) whose MPC OS is itself built for NEON/VFPv4. Instructions per audio block under emulation, against
-  1.2.0: Hall -9%, Room -10%, Early -7%, Plate +5% (the lightest of the four). Not yet measured on a device.
+  1.2.0: Hall -9%, Room -10%, Early -7%, Plate +5% (the lightest of the four).
 - New `tools/null_test.sh` (CI): null-tests both device builds, under qemu, against the upstream-flags reference
   and each other, and checks that reference against upstream's own binary when apt can fetch it. `vst/render.c`
   renders every preset; `vst/effect_test.c` also checks that loading and running a plugin leaves the host's FPU
@@ -26,6 +26,11 @@
 - Pages, presets and parameters unchanged (the pages are byte-identical to 1.2.0's, still generated with
   mpc-vst-plugins `c0394f0`). The catalog zips are packaged with mpc-vst-plugins `67413a5` (Gen2 packaging,
   current installer templates) and carry the correct licence, GPL-3.0-or-later.
+- Catalog: each plugin is listed from its own repo (`gmorb/mpc-vst-dragonfly-hall`, `-room`, `-plate`,
+  `-early-reflections`); the zips are built with that repo as `source_repo` (`CATALOG_OWNER`), and the same files go on
+  this repo's release and on each per-plugin repo's. This repo is not listed itself. docs/CATALOG.md.
+- Removed the 1.2 zips committed to the repo root (releases are the place for binaries).
+- Tested: Akai Force (Gen1) and MPC Live III (Gen2), MPC OS 3.9.1 (`tested.json`).
 
 ## 1.2.0
 The package is now called **Dragonfly Reverb for MPC OS**.
