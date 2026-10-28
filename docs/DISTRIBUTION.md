@@ -1,6 +1,7 @@
 # Distribution layout
 
-Releases follow the **Force VST plugins distribution** layout (the one its DISTRHO and AirWindows collections
+The collection zip (Gen1 only: the Force VST distribution and `vstscanner.sh` are Gen1 tools; Gen2 installs use the
+catalog zips, docs/CATALOG.md) follows the **Force VST plugins distribution** layout (the one its DISTRHO and AirWindows collections
 use), so they drop into the same `Synths` folder and are registered by its `vstscanner.sh` / `vstmanager.sh`.
 This is the layout for every port going forward.
 

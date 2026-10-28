@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.3.0
+**Gen2 builds**, and the reverbs now built as upstream builds them.
+
+- **Gen2 (64-bit) MPCs**: every release now also has `<Name>-1.3.0-mpc-aarch64.zip` per plugin for the MPC Live III,
+  One G2 and Key G2, next to the Gen1 `-mpc-armv7.zip`. Same plugin ids, uids, parameters and pages, so projects
+  move between generations. The catalog lists both from the same entry. Not yet tested on a Gen2 device.
+- **Sound: matched to upstream's own builds.** Upstream compiles the DSP with `-O3 -ffast-math`; 1.2.0 used strict
+  IEEE floats, which turned out to build a slightly different Hall and Room on some presets: Hall's input diffusers
+  (`zrev2.cpp`) and Room's late reverb (`progenitor2.cpp`) compute delay lengths with a division that fast-math does
+  as a multiply by the reciprocal, then round to an integer (and the next prime), so a one-ulp difference picks a
+  different length (Hall 5 of 25 presets, Room 3 of 25; null test against upstream -15.6 and -28.4 dB). The DSP is
+  now compiled with upstream's flags (the VST wrapper stays strict). Against a reference built from the same
+  sources with upstream's x86 flags -- itself bit-identical to Ubuntu's `dragonfly-reverb-vst` 3.2.10 in each
+  plugin's default state -- every preset of all four now nulls to between -48 and -129 dB (worst preset per plugin),
+  the remainder being float rounding and libm (upstream's own binary differs from itself by up to -48 dB between an
+  x86 CPU with FMA and one without). Gen1 and Gen2 null to -98 dB or better against each other. docs/SOUND.md.
+- **Gen1: NEON + VFPv4** (`-mcpu=cortex_a17`; 1.2.0 was VFPv3-D16 without NEON). Every Gen1 device is an RK3288
+  (Cortex-A17) whose MPC OS is itself built for NEON/VFPv4. Instructions per audio block under emulation, against
+  1.2.0: Hall -9%, Room -10%, Early -7%, Plate +5% (the lightest of the four). Not yet measured on a device.
+- New `tools/null_test.sh` (CI): null-tests both device builds, under qemu, against the upstream-flags reference
+  and each other, and checks that reference against upstream's own binary when apt can fetch it. `vst/render.c`
+  renders every preset; `vst/effect_test.c` also checks that loading and running a plugin leaves the host's FPU
+  mode alone (no `crtfastmath`).
+- Pages, presets and parameters unchanged (the pages are byte-identical to 1.2.0's, still generated with
+  mpc-vst-plugins `c0394f0`). The catalog zips are packaged with mpc-vst-plugins `67413a5` (Gen2 packaging,
+  current installer templates) and carry the correct licence, GPL-3.0-or-later.
+
 ## 1.2.0
 The package is now called **Dragonfly Reverb for MPC OS**.
 

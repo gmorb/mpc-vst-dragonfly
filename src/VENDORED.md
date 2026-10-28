@@ -12,7 +12,7 @@ Only the freeverb3 files upstream's own Makefile compiles are built (`vst/build.
 kept so a re-vendor is a plain copy.
 
 `src/shim/` replaces the three DPF headers the DSP includes: `DistrhoPlugin.hpp` (`d_isNotEqual`),
-`extra/ScopedDenormalDisable.hpp` (flush-to-zero; ARM FPSCR.FZ on the device), `Artwork.hpp` (UI size constants).
+`extra/ScopedDenormalDisable.hpp` (flush-to-zero: FPSCR.FZ on Gen1, FPCR.FZ on Gen2), `Artwork.hpp` (UI size constants).
 
 Also copied, as reference only (never compiled): each plugin's `UI.cpp`, as `UI.cpp.ref` -- the MPC pages take
 their layout, value formats and behaviour from it (`vst/df_skin.py`, `vst/gen_formats.py`).
