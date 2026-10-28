@@ -10,7 +10,9 @@
  *   an impulse gives a finite, bounded reverb tail (and silence in -> silence out);
  *   in-place processing (in == out) and the legacy accumulating process() work;
  *   chunk save -> restore into a fresh instance gives the same params AND the same audio;
- *   44.1 -> 48 kHz sample-rate change keeps working; every preset/program renders sanely.
+ *   44.1 -> 48 kHz sample-rate change keeps working; every preset/program renders sanely;
+ *   loading the plugin, creating instances and processing leave the host thread's FPU mode as it was
+ *   (no crtfastmath constructor, and the DSP's flush-to-zero is restored after every block).
  * Build it for the PC (with -fsanitize=address against a PC build of the plugin), or for armhf and run
  * it under qemu-arm against the real device .so.   effect_test <plugin.so>    exit 1 on any failure. */
 #include <dlfcn.h>
@@ -40,6 +42,19 @@ struct AEffect {
 };
 enum { effOpen = 0, effClose = 1, effGetParamDisplay = 7, effGetParamName = 8, effSetSampleRate = 10,
        effMainsChanged = 12, effGetChunk = 23, effSetChunk = 24, effGetPlugCategory = 35, effGetEffectName = 45 };
+
+/* the calling thread's floating-point control register: FPSCR (armv7), FPCR (aarch64), MXCSR (x86) */
+static uint64_t fpu_mode(void) {
+#if defined(__aarch64__)
+    uint64_t v; __asm__ __volatile__("mrs %0, fpcr" : "=r"(v)); return v;
+#elif defined(__arm__)
+    uint32_t v; __asm__ __volatile__("vmrs %0, fpscr" : "=r"(v)); return v & 0x07c09f00u;  /* control bits only */
+#elif defined(__x86_64__) || defined(__i386__)
+    uint32_t v; __asm__ __volatile__("stmxcsr %0" : "=m"(v)); return v & ~0x3fu;          /* not the sticky flags */
+#else
+    return 0;
+#endif
+}
 
 #define MAXP 64
 static int automated[MAXP], fails;
@@ -77,6 +92,7 @@ static float run(AEffect *a, int n, int imp, int skip_blocks, int *finite, float
 
 int main(int argc, char **argv) {
     if (argc < 2) { fprintf(stderr, "usage: effect_test <plugin.so>\n"); return 2; }
+    const uint64_t fpu0 = fpu_mode();
     void *h = dlopen(argv[1], RTLD_NOW | RTLD_LOCAL);
     if (!h) { printf("FAIL dlopen: %s\n", dlerror()); return 1; }
     AEffect *(*entry)(hostcb) = (AEffect *(*)(hostcb))dlsym(h, "VSTPluginMain");
@@ -85,6 +101,7 @@ int main(int argc, char **argv) {
     AEffect *a = entry(host), *b = entry(host);
     CHECK(a && b && a != b, "two independent instances");
     if (!a || !b) return 1;
+    CHECK(fpu_mode() == fpu0, "loading the plugin keeps the host's FPU mode (%llx)", (unsigned long long)fpu_mode());
     char name[256] = {0};
     a->d(a, effGetEffectName, 0, 0, name, 0);
     printf("---- %s: %d params, uid %08x\n", name, a->numParams, a->uid);
@@ -287,6 +304,7 @@ int main(int argc, char **argv) {
     CHECK(f, "parameter sweep during playback stays finite");
 
     a->d(a, effClose, 0, 0, 0, 0); b->d(b, effClose, 0, 0, 0, 0);
+    CHECK(fpu_mode() == fpu0, "after all processing the host's FPU mode is unchanged (%llx)", (unsigned long long)fpu_mode());
     printf("%s: %s (%d failure%s)\n", name, fails ? "FAILED" : "PASSED", fails, fails == 1 ? "" : "s");
     return fails ? 1 : 0;
 }
