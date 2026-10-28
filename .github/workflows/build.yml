@@ -10,9 +10,12 @@ on:
   workflow_dispatch:
 
 env:
-  # mpc-vst-plugins (skin generator, popup.h, shadow_art): pinned to the commit this port is built and tested with
+  # mpc-vst-plugins (skin generator, popup.h, shadow_art): pinned to the commit this port's pages are built and
+  # tested with (the pages are byte-identical from release to release while this stays)
   MPC_VST_REPO: sd88me/mpc-vst-plugins
   MPC_VST_REF: c0394f0352d77072f345bd929d26c6fc09bc34a0
+  # the same kit, newer, for packaging only (release.py / catalog_check.py: Gen2 zips, current installer templates)
+  MPC_VST_RELEASE_REF: 67413a53a11b9e16bbbe333a5c7904b0dd49aeb2
 
 jobs:
   build:
@@ -28,29 +31,42 @@ jobs:
           ref: ${{ env.MPC_VST_REF }}
           path: mpc-vst-plugins
 
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.MPC_VST_REPO }}
+          ref: ${{ env.MPC_VST_RELEASE_REF }}
+          path: mpc-vst-plugins-release
+
       - name: Tools
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y -q qemu-user libc6-armhf-cross zip
+          sudo apt-get install -y -q qemu-user libc6-armhf-cross libc6-arm64-cross zip libgl1 libx11-6 libxext6 libxrandr2
           pip install --break-system-packages ziglang==0.16.0 pillow numpy
 
-      - name: Build (armhf, Zig, glibc 2.36)
+      - name: Build (Gen1 armv7 + Gen2 aarch64, Zig, glibc 2.36)
         working-directory: mpc-vst-dragonfly
         env:
           MPC_VST: ${{ github.workspace }}/mpc-vst-plugins
           TOOLCHAIN: zig
         run: vst/build.sh > build.log 2>&1 || { tail -80 build.log; exit 1; }; grep -E '^==|^   ' build.log
 
-      - name: Test (PC build under ASan/UBSan, and the device .so under qemu-arm)
+      - name: Test (PC build under ASan/UBSan, the Gen1 .so under qemu-arm, the Gen2 .so under qemu-aarch64)
         working-directory: mpc-vst-dragonfly
         env:
           MPC_VST: ${{ github.workspace }}/mpc-vst-plugins
         run: vst/test.sh
 
-      - name: Package (Force distribution zip + the catalog's per-plugin zips, checked by catalog_check.py)
+      - name: Sound (null test of both device builds against upstream's flags and upstream's own binary)
         working-directory: mpc-vst-dragonfly
         env:
           MPC_VST: ${{ github.workspace }}/mpc-vst-plugins
+        run: tools/null_test.sh
+
+      - name: Package (Force distribution zip + the catalog's per-plugin Gen1/Gen2 zips, checked by catalog_check.py)
+        working-directory: mpc-vst-dragonfly
+        env:
+          MPC_VST: ${{ github.workspace }}/mpc-vst-plugins
+          MPC_VST_RELEASE: ${{ github.workspace }}/mpc-vst-plugins-release
         run: tools/package.sh
 
       - name: Tag matches VERSION
