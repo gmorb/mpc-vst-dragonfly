@@ -10,7 +10,7 @@ touchscreen page modelled on the original plugin's (including its spectrogram), 
 | Dragonfly - VST - Hall | Hall | 25, in 5 banks |
 | Dragonfly - VST - Room | Room | 25, in 5 banks |
 | Dragonfly - VST - Plate | Plate | 8, plus 3 reverb types |
-| Dragonfly - VST - Early Refl | Early Refl (Early Reflections) | 8 reflection types |
+| Dragonfly - VST - Early Reflections | Early Reflections | 8 reflection types |
 
 Version @VERSION@. Each folder is self-contained: the plugin (`.so`), its `plugin-meta.xml`, its page
 (`Plugin Skins/`), `version.xml`, a parameter description (`<Name>.json`) and its licences.

@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.1
+**Early Reflections gets its full name.** The fourth plugin was shipped as the abbreviated `Early Refl` (10
+characters, chosen to fit MPC's insert slot, which is about 11); it is now `Early Reflections` everywhere it is
+shown: the insert slot, the plugin browser, the page folder (`Dragonfly - VST - Early Reflections`) and the
+catalog zips (`Early-Reflections-1.3.1-mpc-armv7.zip`, `-mpc-aarch64.zip`).
+
+- The catalog entry's `asset_pattern` moves to `Early-Reflections-*-mpc-armv7.zip` in the same change, so the
+  catalog still finds the Gen1 zip and its Gen2 sibling.
+- Unchanged: the plugin id (`dragonfly-early-reflections`), the VST uid (`44664572`), every parameter key, the
+  page layout and the DSP. Hall, Room and Plate are untouched.
+- Hosts that match a project's insert by the plugin's **file name** (`EarlyRefl.so` -> `EarlyReflections.so`) or
+  its `version.xml` identifier (`Dragonfly.vst.earlyrefl` -> `Dragonfly.vst.earlyreflections`) may not find the
+  old instance automatically: re-add Early Reflections to that track after updating. The uid is unchanged, so
+  the wrapper still accepts the saved state.
+
 ## 1.3.0
 **Gen2 builds**, and the reverbs now built as upstream builds them.
 

@@ -21,7 +21,7 @@ PLUGINS = [
     ("dragonfly-plate", "Dragonfly Plate", "Plate-*-mpc-armv7.zip", ["plate", "presets"],
      "Plate reverb with three algorithms (Simple, Nested, Tank) and 8 presets; the original Dragonfly UI with "
      "its spectrogram."),
-    ("dragonfly-early-reflections", "Dragonfly Early Reflections", "Early-Refl-*-mpc-armv7.zip", ["early-reflections", "room"],
+    ("dragonfly-early-reflections", "Dragonfly Early Reflections", "Early-Reflections-*-mpc-armv7.zip", ["early-reflections", "room"],
      "Early reflections only, 8 reflection types from Abrupt Echo to Home Studio; the original Dragonfly UI."),
 ]
 

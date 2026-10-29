@@ -8,7 +8,7 @@ Each Dragonfly plugin is its own catalog entry, with one zip per device generati
 | `dragonfly-hall` | `Hall-X.Y.Z-mpc-armv7.zip` | `Hall-X.Y.Z-mpc-aarch64.zip` | `<Synths>/Dragonfly - VST - Hall/dragonfly_hall.so` + its page |
 | `dragonfly-room` | `Room-X.Y.Z-mpc-armv7.zip` | `Room-X.Y.Z-mpc-aarch64.zip` | `<Synths>/Dragonfly - VST - Room/dragonfly_room.so` + page |
 | `dragonfly-plate` | `Plate-X.Y.Z-mpc-armv7.zip` | `Plate-X.Y.Z-mpc-aarch64.zip` | `<Synths>/Dragonfly - VST - Plate/dragonfly_plate.so` + page |
-| `dragonfly-early-reflections` | `Early-Refl-X.Y.Z-mpc-armv7.zip` | `Early-Refl-X.Y.Z-mpc-aarch64.zip` | `<Synths>/Dragonfly - VST - Early Refl/dragonfly_early.so` + page |
+| `dragonfly-early-reflections` | `Early-Reflections-X.Y.Z-mpc-armv7.zip` | `Early-Reflections-X.Y.Z-mpc-aarch64.zip` | `<Synths>/Dragonfly - VST - Early Reflections/dragonfly_early.so` + page |
 
 (The kit's portable layout: one self-contained folder in a Synths folder, `/sdcard/Synths` by default on Gen1; on
 Gen2 the Synths folder MPC lists in `SynthContentLocations`, e.g. `/nvme/Synths` on a Live III. The collection zip

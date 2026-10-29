@@ -13,7 +13,7 @@ with upstream's own flags, and null-tested against upstream's binary ([docs/SOUN
 | **Hall** | 25, in 5 banks; Q-Link banks MAIN and EQ |
 | **Room** | 25, in 5 banks; Q-Link banks MAIN and TONE |
 | **Plate** | 8, plus 3 reverb types |
-| **Early Refl** (Early Reflections) | 8 reflection types |
+| **Early Reflections** | 8 reflection types |
 
 ## Install
 Two ways, from the same [Releases](../../releases). Use one per device (see [docs/CATALOG.md](docs/CATALOG.md)).
